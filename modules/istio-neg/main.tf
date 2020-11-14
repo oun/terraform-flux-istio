@@ -1,0 +1,47 @@
+terraform {
+  backend "gcs" {}
+  required_version = "= 0.12.26"
+
+  required_providers {
+    google     = "= 3.25.0"
+  }
+}
+
+provider "kubernetes" {
+  load_config_file       = false
+  host                   = var.cluster_endpoint
+  token                  = data.google_client_config.default.access_token
+  cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
+}
+
+locals {
+  annotations = data.kubernetes_service.ingress_gateway.metadata[0].annotations
+  neg_name    = local.annotations != null ? jsondecode(local.annotations["cloud.google.com/neg-status"])["network_endpoint_groups"]["80"] : null
+  zones       = local.annotations != null ? jsondecode(local.annotations["cloud.google.com/neg-status"])["zones"] : null
+}
+
+resource "null_resource" "wait_for_istio_ingressgateway" {
+  triggers = {
+    timestamp = "${timestamp()}"
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+    gcloud container clusters get-credentials ${var.cluster_name} --region ${var.region} --project ${var.project}
+    while [[ $(kubectl get pods -l istio=ingressgateway -n ${var.namespace} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; \
+    do echo "waiting for istio ingress gateway" && sleep 5; done
+    EOT
+    interpreter = ["/bin/bash", "-c"]
+  }
+}
+
+data "google_client_config" "default" {
+  depends_on = [null_resource.wait_for_istio_ingressgateway]
+}
+
+data "kubernetes_service" "ingress_gateway" {
+  metadata {
+    name      = "istio-ingressgateway"
+    namespace = var.namespace
+  }
+  depends_on = [data.google_client_config.default]
+}

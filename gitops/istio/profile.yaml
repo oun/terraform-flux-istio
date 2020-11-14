@@ -1,0 +1,71 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istio
+spec:
+  profile: default
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
+        k8s:
+          service:
+            type: ClusterIP
+            ports:
+              - name: status-port
+                port: 15020
+                protocol: TCP
+                targetPort: 15020
+              - name: http
+                port: 80
+                protocol: TCP
+                targetPort: 80
+              - name: https
+                port: 443
+                protocol: TCP
+                targetPort: 443
+              - name: kiali
+                port: 15029
+                protocol: TCP
+                targetPort: 15029
+              - name: prometheus
+                port: 15030
+                protocol: TCP
+                targetPort: 15030
+              - name: grafana
+                port: 15031
+                protocol: TCP
+                targetPort: 15031
+              - name: tracing
+                port: 15032
+                protocol: TCP
+                targetPort: 15032
+              - name: tls
+                port: 15443
+                protocol: TCP
+                targetPort: 15443
+              - name: tcp
+                port: 31400
+                protocol: TCP
+                targetPort: 31400
+          serviceAnnotations:
+            "cloud.google.com/neg": '{"exposed_ports": {"80":{}}}'
+          replicaCount: 1
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+  values:
+    global:
+      proxy:
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "512Mi"
