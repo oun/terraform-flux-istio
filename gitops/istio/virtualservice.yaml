@@ -18,10 +18,10 @@ spec:
           uri:
             exact: /
       rewrite:
-        authority: istio-ingressgateway.istio-system.svc.cluster.local:15021
+        authority: istio-ingressgateway.istio-system.svc.cluster.local:15020
         uri: /healthz/ready
       route:
         - destination:
             host: istio-ingressgateway.istio-system.svc.cluster.local
             port:
-              number: 15021
+              number: 15020
