@@ -219,8 +219,10 @@ resource "google_container_cluster" "primary" {
   }
 
   ip_allocation_policy {
-    cluster_secondary_range_name  = var.ip_range_pods
-    services_secondary_range_name = var.ip_range_services
+//    cluster_secondary_range_name  = var.ip_range_pods
+//    services_secondary_range_name = var.ip_range_services
+    cluster_ipv4_cidr_block = ""
+    services_ipv4_cidr_block = ""
   }
 
   maintenance_policy {
@@ -271,18 +273,6 @@ resource "google_container_cluster" "primary" {
     for_each = var.enable_workload_identity ? ["${var.project}.svc.id.goog"] : []
     content {
       identity_namespace = workload_identity_config.value
-    }
-  }
-
-  dynamic "resource_usage_export_config" {
-    for_each = var.resource_usage_export != null ? [var.resource_usage_export] : []
-    content {
-      enable_network_egress_metering       = resource_usage_export_config.value.enable_network_egress_metering
-      enable_resource_consumption_metering = resource_usage_export_config.value.enable_resource_consumption_metering
-
-      bigquery_destination {
-        dataset_id = resource_usage_export_config.value.bigquery_dataset
-      }
     }
   }
 }

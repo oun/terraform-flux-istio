@@ -136,15 +136,15 @@ variable "network_policy" {
   default     = true
 }
 
-variable "ip_range_pods" {
-  type        = string
-  description = "The _name_ of the secondary subnet ip range to use for pods"
-}
-
-variable "ip_range_services" {
-  type        = string
-  description = "The _name_ of the secondary subnet range to use for services"
-}
+//variable "ip_range_pods" {
+//  type        = string
+//  description = "The _name_ of the secondary subnet ip range to use for pods"
+//}
+//
+//variable "ip_range_services" {
+//  type        = string
+//  description = "The _name_ of the secondary subnet range to use for services"
+//}
 
 variable "maintenance_start_time" {
   type        = string
@@ -293,13 +293,4 @@ variable "enable_workload_identity" {
   type        = bool
   description = "Enable workload identity"
   default     = false
-}
-
-variable "resource_usage_export" {
-  type        = object({
-    bigquery_dataset                     = string
-    enable_network_egress_metering       = bool
-    enable_resource_consumption_metering = bool
-  })
-  description = "The resource usage export configuration"
 }
