@@ -14,9 +14,9 @@ spec:
             type: ClusterIP
             ports:
               - name: status-port
-                port: 15020
+                port: 15021
                 protocol: TCP
-                targetPort: 15020
+                targetPort: 15021
               - name: http
                 port: 80
                 protocol: TCP
