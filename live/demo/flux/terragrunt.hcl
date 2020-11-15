@@ -8,6 +8,10 @@ include {
 
 dependency "gke" {
   config_path = "../gke"
+  mock_outputs = {
+    endpoint       = "mock"
+    ca_certificate = "mock"
+  }
 }
 
 inputs = {
