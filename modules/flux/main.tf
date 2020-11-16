@@ -168,19 +168,19 @@ resource "helm_release" "helm_operator" {
   }
   set {
     name = "resources.requests.cpu"
-    value = "1.5"
+    value = "500m"
   }
   set {
     name = "resources.requests.memory"
-    value = "1Gi"
+    value = "256Mi"
   }
   set {
     name = "resources.limits.cpu"
-    value = "2"
+    value = "1"
   }
   set {
     name = "resources.limits.memory"
-    value = "2Gi"
+    value = "512Mi"
   }
   depends_on = [kubectl_manifest.helm_operator_crds]
 }
