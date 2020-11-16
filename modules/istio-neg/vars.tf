@@ -1,5 +1,11 @@
-variable "region" {
-  description = "The GCP region to use."
+variable "cluster_type" {
+  description = "Cluster type (regional / zonal)"
+  type        = string
+  default     = "zonal"
+}
+
+variable "cluster_location" {
+  description = "Cluster location (region if regional cluster, zone if zonal cluster)"
   type        = string
   default     = null
 }

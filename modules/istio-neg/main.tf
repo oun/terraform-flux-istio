@@ -16,6 +16,7 @@ provider "kubernetes" {
 
 locals {
   annotations = data.kubernetes_service.ingress_gateway.metadata[0].annotations
+  location    = var.cluster_type == "zonal" ? "--zone ${var.cluster_location}" : "--region ${var.cluster_location}"
   neg_name    = local.annotations != null ? jsondecode(local.annotations["cloud.google.com/neg-status"])["network_endpoint_groups"]["80"] : null
   zones       = local.annotations != null ? jsondecode(local.annotations["cloud.google.com/neg-status"])["zones"] : null
 }
@@ -26,11 +27,11 @@ resource "null_resource" "wait_for_istio_ingressgateway" {
   }
   provisioner "local-exec" {
     command = <<EOT
-    gcloud container clusters get-credentials ${var.cluster_name} --region ${var.region} --project ${var.project}
+    gcloud container clusters get-credentials ${var.cluster_name} ${local.location} --project ${var.project}
     while [[ $(kubectl get pods -l istio=ingressgateway -n ${var.namespace} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; \
     do echo "waiting for istio ingress gateway" && sleep 5; done
     EOT
-    interpreter = ["/bin/bash", "-c"]
+    interpreter = ["timeout", "30m", "/bin/bash", "-c"]
   }
 }
 
