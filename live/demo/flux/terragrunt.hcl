@@ -20,7 +20,7 @@ inputs = {
   flux_git_repo               = "git@github.com:oun/terraform-flux-istio.git"
   flux_namespace              = "flux"
   flux_git_private_key        = "./git_private_key"
-  flux_git_path               = ["app", "istio"]
+  flux_git_path               = ["gitops/app", "gitops/istio"]
   flux_registry_poll_interval = "2m"
   flux_registry_rps           = 30
 }
