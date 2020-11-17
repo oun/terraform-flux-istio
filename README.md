@@ -34,13 +34,20 @@ Change directory to `live/demo`
 terragrunt apply-all
 ```
 
-This will provision and deploy the following resources:
-- GKE cluster
-- FluxCD and Helm operator
-- Istio and sample bookinfo services
-- Network Endpoint Group for Istio ingress gateway
-- HTTP(s) Load Balancer
+This scripts will do:
+- Provision zonal GKE cluster v1.16.x with preemptible node pool.
+- Deploy FluxCD and Helm operator to flux namespace.
+- FluxCD sync deployments from gitops directory then deploy Istio Operator and bookinfo application.
+- Istio Operator install the Istiod and Istio Ingress gateway.
+- The istio-neg module waiting for Istio Ingress gateway to be ready and then get the NEG name.
+- Provision HTTP Load Balancer, forwarding rule and NEG backend of Istio Ingress gateway.
+- Provision firewall rule for health check NEG backend.
+
+When Terraform execution finish, it will output ip address of the HTTP Load Balancer.
 
 Go to the sample bookinfo URL:
 http://your-load-balancer-ip/productpage
 
+Reference:
+
+https://github.com/stefanprodan/gitops-istio
