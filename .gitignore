@@ -19,3 +19,5 @@
 build/
 */build/
 out/
+
+git_private_key
