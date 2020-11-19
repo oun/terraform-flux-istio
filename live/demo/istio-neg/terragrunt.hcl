@@ -10,9 +10,10 @@ dependency "gke" {
   config_path = "../gke"
   mock_outputs = {
     name            = "mock"
-    region          = "asia-southeast1"
+    type            = "zonal"
+    location        = "asia-southeast1"
     endpoint        = "mock"
-    ca_certificate  = "mock"
+    ca_certificate  = ""
   }
 }
 

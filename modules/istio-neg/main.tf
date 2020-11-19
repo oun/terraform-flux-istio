@@ -31,7 +31,7 @@ resource "null_resource" "wait_for_istio_ingressgateway" {
     while [[ $(kubectl get pods -l istio=ingressgateway -n ${var.namespace} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; \
     do echo "waiting for istio ingress gateway" && sleep 5; done
     EOT
-    interpreter = ["timeout", "30m", "/bin/bash", "-c"]
+    interpreter = ["timeout", "10m", "/bin/bash", "-c"]
   }
 }
 

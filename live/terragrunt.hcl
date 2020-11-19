@@ -5,7 +5,7 @@ locals {
   project     = local.env_vars.locals.project
   environment = local.env_vars.locals.environment
 
-  backend_project = "terraform-flux-istio-demo"
+  backend_project = local.env_vars.locals.project
 }
 
 generate "provider" {
