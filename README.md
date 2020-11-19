@@ -78,6 +78,13 @@ When Terraform execution finish, it will output ip address of the HTTP Load Bala
 Go to the sample bookinfo URL:
 http://your-load-balancer-ip/productpage
 
+## Clean up
+
+To destroy all provisioned resources:
+```
+terragrunt destroy-all
+```
+
 ## Reference:
 
 https://github.com/stefanprodan/gitops-istio
