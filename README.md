@@ -6,7 +6,6 @@ GitOps using TerraGrunt and Terraform to provision Google Kubernetes Engine clus
 
 - Google Cloud Project
 - TerraGrunt and Terraform
-- Kubectl Terraform provider
 
 ### Project Structure
 
@@ -65,7 +64,7 @@ terragrunt apply-all
 
 This scripts will do:
 - Create and keep terraform remote state in a GCS bucket.
-- Provision zonal GKE cluster v1.16.x with preemptible node pool.
+- Provision zonal GKE cluster with preemptible node pool.
 - Deploy FluxCD and Helm operator to flux namespace.
 - FluxCD sync deployments from gitops directory then deploy Istio Operator and bookinfo application.
 - Istio Operator install the Istiod and Istio Ingress gateway.

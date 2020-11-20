@@ -8,7 +8,7 @@ include {
 
 inputs = {
   kubernetes_version               = "latest"
-  kubernetes_version_prefix        = "1.16."
+  kubernetes_version_prefix        = "1.17."
   name                             = "gitops-istio-demo"
   description                      = "GitOps Istio Demo"
   regional                         = false

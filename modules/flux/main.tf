@@ -3,7 +3,8 @@ terraform {
   required_version = "= 0.12.26"
 
   required_providers {
-    google     = "= 3.25.0"
+    google           = "= 3.25.0"
+    kubernetes-alpha = "= 0.2.1"
   }
 }
 # ------------------------------------------------------------------------------
@@ -17,9 +18,8 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
 }
 
-provider "kubectl" {
-  load_config_file       = false
-  host                   = var.cluster_endpoint
+provider "kubernetes-alpha" {
+  host                   = "https://${var.cluster_endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
 }
@@ -125,10 +125,9 @@ resource "helm_release" "fluxcd" {
   depends_on = [kubernetes_secret.git_secret]
 }
 
-resource "kubectl_manifest" "helm_operator_crds" {
-  provider = kubectl
-
-  yaml_body = file("./manifests/crds.yaml")
+resource "kubernetes_manifest" "helm_operator_crds" {
+  provider   = kubernetes-alpha
+  manifest   = yamldecode(file("./manifests/crds.yaml"))
   depends_on = [helm_release.fluxcd]
 }
 
@@ -182,5 +181,5 @@ resource "helm_release" "helm_operator" {
     name = "resources.limits.memory"
     value = "512Mi"
   }
-  depends_on = [kubectl_manifest.helm_operator_crds]
+  depends_on = [kubernetes_manifest.helm_operator_crds]
 }
