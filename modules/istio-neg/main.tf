@@ -35,6 +35,20 @@ resource "null_resource" "wait_for_istio_ingressgateway" {
   }
 }
 
+resource "null_resource" "delete_istio_ingressgateway_neg" {
+  provisioner "local-exec" {
+    when       = destroy
+    command    = <<EOT
+    neg=$(kubectl get service istio-ingressgateway -n ${var.namespace} -o jsonpath='{.metadata.annotations.cloud\.google\.com/neg-status}' | jq -r '.network_endpoint_groups["80"]')
+    echo "deleting network endpoint group $neg"
+    for zone in $(kubectl get service istio-ingressgateway -n ${var.namespace} -o jsonpath='{.metadata.annotations.cloud\.google\.com/neg-status}' | jq -r '.zones[]'); do
+      gcloud compute network-endpoint-groups delete $neg --zone $zone --quiet
+    done
+    EOT
+    interpreter = ["/bin/bash", "-c"]
+  }
+}
+
 data "google_client_config" "default" {
   depends_on = [null_resource.wait_for_istio_ingressgateway]
 }
